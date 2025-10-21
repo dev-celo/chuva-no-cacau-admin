@@ -18,7 +18,20 @@ export default function editarPost({ params }) {
   const handleUpdate = async () => {
     // Pego os valores do meu form e removo campos em branco
     const camposPreenchidos = Object.fromEntries(
-      Object.entries(formData).filter(([_, value]) => value.trim() !== "")
+      Object.entries(formData).filter(([_, value]) => {
+        if (Array.isArray(value)) {
+          // Mantém o campo se tiver ao menos uma tag
+          return value.length > 0;
+        }
+
+        if (typeof value === "string") {
+          // Mantém se a string não estiver vazia
+          return value.trim() !== "";
+        }
+
+        // Mantém qualquer outro tipo que não seja nulo ou indefinido
+        return value !== null && value !== undefined;
+      })
     );
 
     try {
@@ -95,8 +108,16 @@ export default function editarPost({ params }) {
           <input
             type="text"
             placeholder="Tags (separadas por vírgula)"
-            value={formData.tags}
-            onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+            value={Array.isArray(formData.tags) ? formData.tags.join(", ") : formData.tags}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                tags: e.target.value
+                  .split(",")              // divide em array
+                  .map(tag => tag.trim())  // remove espaços em excesso
+                  .filter(tag => tag !== "") // remove entradas vazias
+              })
+            }
             className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
 
