@@ -93,6 +93,13 @@ export default function HomeAdmin() {
         + Nova Notícia
       </button>
 
+      <button
+        onClick={() => window.location.href = "/dashboard/novo-valor-do-cacau"}
+        className="mb-4 bg-green-500 text-white px-4 py-2 rounded ml-5"
+      >
+        + Novo Valor do Cacau
+      </button>
+
       {loading ? (
         <p>Carregando notícias...</p>
       ) : noticiasFiltradas.length === 0 ? (
